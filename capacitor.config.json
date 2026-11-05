@@ -1,0 +1,9 @@
+{
+  "appId": "com.nexus.social.app",
+  "appName": "Nexus Social",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  }
+}

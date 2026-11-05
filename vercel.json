@@ -1,0 +1,40 @@
+{
+  "version": 2,
+  "framework": "vite",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "headers": [
+    {
+      "source": "/api/download/android-apk",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/vnd.android.package-archive"
+        },
+        {
+          "key": "Content-Disposition",
+          "value": "attachment; filename=\"nexus-social-v2.4.0.apk\""
+        }
+      ]
+    },
+    {
+      "source": "/nexus-app.apk",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/vnd.android.package-archive"
+        },
+        {
+          "key": "Content-Disposition",
+          "value": "attachment; filename=\"nexus-social-v2.4.0.apk\""
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/((?!api/.*|assets/.*|.*\\.svg|.*\\.png|.*\\.json|.*\\.apk|sw\\.js|registerSW\\.js).* )",
+      "destination": "/index.html"
+    }
+  ]
+}

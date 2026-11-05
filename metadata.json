@@ -1,0 +1,17 @@
+{
+  "name": "Nexus Social - نكسوس الاجتماعية",
+  "description": "منصة تواصل اجتماعي متكاملة مع مشاركة الصور والفيديو، البث المباشر، الدردشات المشفرة، المحفظة والذكاء الاصطناعي.",
+  "requestFramePermissions": [
+    "microphone",
+    "camera",
+    "display-capture",
+    "geolocation",
+    "bluetooth",
+    "clipboard-read",
+    "serial",
+    "usb"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
