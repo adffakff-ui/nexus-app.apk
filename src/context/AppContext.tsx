@@ -85,6 +85,8 @@ interface AppContextType {
   resetAppData: () => void;
   isMobileSidebarOpen: boolean;
   setIsMobileSidebarOpen: (open: boolean) => void;
+  blockedKeywords: string[];
+  setBlockedKeywords: (keywords: string[]) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -114,6 +116,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
   const [activeTab, setActiveTab] = useState<string>('feed');
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
+  const [blockedKeywords, setBlockedKeywords] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('nexus_blocked_keywords');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem('nexus_blocked_keywords', JSON.stringify(blockedKeywords));
+  }, [blockedKeywords]);
 
   const [posts, setPosts] = useState<Post[]>([]);
   const [reels, setReels] = useState<Reel[]>([]);
@@ -881,7 +895,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setChats,
         resetAppData,
         isMobileSidebarOpen,
-        setIsMobileSidebarOpen
+        setIsMobileSidebarOpen,
+        blockedKeywords,
+        setBlockedKeywords
       }}
     >
       {children}

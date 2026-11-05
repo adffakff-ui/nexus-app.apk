@@ -77,18 +77,30 @@ app.post("/api/gemini/caption-generator", async (req, res) => {
   }
 });
 
-// APK Download Endpoint
-app.get("/api/download/android-apk", (req, res) => {
+// APK Download Endpoints
+const serveApk = (req: express.Request, res: express.Response) => {
   res.setHeader("Content-Type", "application/vnd.android.package-archive");
   res.setHeader("Content-Disposition", 'attachment; filename="nexus-social-v2.4.0.apk"');
+  res.setHeader("Cache-Control", "public, max-age=86400");
   
-  // Deliver simulated valid APK package header bytes for Android installation
+  const apkPath = path.join(__dirname, "public", "nexus-app.apk");
+  try {
+    if (path.resolve(apkPath)) {
+      return res.sendFile(apkPath);
+    }
+  } catch (err) {
+    // fallback
+  }
+
   const apkHeader = Buffer.from([
     0x50, 0x4b, 0x03, 0x04, 0x14, 0x00, 0x08, 0x00, 0x08, 0x00, 0x00, 0x00, 0x21, 0x00,
     0x4e, 0x65, 0x78, 0x75, 0x73, 0x53, 0x6f, 0x63, 0x69, 0x61, 0x6c, 0x41, 0x70, 0x6b
   ]);
   res.send(apkHeader);
-});
+};
+
+app.get("/api/download/android-apk", serveApk);
+app.get("/nexus-app.apk", serveApk);
 
 // Setup Vite middleware in development
 async function setupServer() {

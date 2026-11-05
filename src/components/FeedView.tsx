@@ -345,6 +345,7 @@ export const FeedView: React.FC = () => {
     createPost, 
     runAiAssistant, 
     blockedUserIds, 
+    blockedKeywords,
     followingUserIds = [], 
     toggleFollowUser 
   } = useApp();
@@ -446,7 +447,10 @@ export const FeedView: React.FC = () => {
   };
 
   // Base list of non-blocked posts
-  const basePosts = posts.filter(post => !blockedUserIds.includes(post.userId));
+  const basePosts = posts.filter(post => 
+    !blockedUserIds.includes(post.userId) &&
+    !blockedKeywords.some(keyword => post.content.toLowerCase().includes(keyword.toLowerCase()))
+  );
 
   // Engagement score calculator for 'Popular' filter
   const getEngagementScore = (p: Post) => {

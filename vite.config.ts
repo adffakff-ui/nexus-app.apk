@@ -66,6 +66,30 @@ export default defineConfig(() => {
                 expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
                 cacheableResponse: { statuses: [0, 200] }
               }
+            },
+            {
+              urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp|ico)$/i,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'images-cache',
+                expiration: {
+                  maxEntries: 100,
+                  maxAgeSeconds: 60 * 60 * 24 * 30 // 30 Days cache
+                },
+                cacheableResponse: { statuses: [0, 200] }
+              }
+            },
+            {
+              urlPattern: /\.(?:mp4|webm|ogg|mp3|wav)$/i,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'media-cache',
+                expiration: {
+                  maxEntries: 30,
+                  maxAgeSeconds: 60 * 60 * 24 * 14 // 14 Days cache
+                },
+                cacheableResponse: { statuses: [0, 200] }
+              }
             }
           ]
         },
@@ -78,6 +102,52 @@ export default defineConfig(() => {
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
+      },
+    },
+    build: {
+      target: 'es2020',
+      minify: 'esbuild',
+      cssMinify: true,
+      cssCodeSplit: true,
+      sourcemap: false,
+      assetsInlineLimit: 4096, // Inline assets < 4KB to reduce HTTP requests, compress larger files
+      chunkSizeWarningLimit: 1500,
+      rollupOptions: {
+        treeshake: {
+          preset: 'recommended',
+          moduleSideEffects: 'no-external',
+          propertyReadSideEffects: false,
+          tryCatchDeoptimization: false,
+        },
+        output: {
+          compact: true,
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              if (id.includes('react') || id.includes('react-dom')) {
+                return 'vendor-react';
+              }
+              if (id.includes('lucide-react')) {
+                return 'vendor-icons';
+              }
+              if (id.includes('motion')) {
+                return 'vendor-animation';
+              }
+              return 'vendor-core';
+            }
+          },
+          assetFileNames: (assetInfo) => {
+            const extType = assetInfo.name?.split('.').pop() || '';
+            if (/png|jpe?g|svg|gif|tiff|bmp|ico|webp/i.test(extType)) {
+              return 'assets/images/[name]-[hash][extname]';
+            }
+            if (/woff|woff2|eot|ttf|otf/i.test(extType)) {
+              return 'assets/fonts/[name]-[hash][extname]';
+            }
+            return 'assets/[name]-[hash][extname]';
+          },
+          chunkFileNames: 'assets/js/[name]-[hash].js',
+          entryFileNames: 'assets/js/[name]-[hash].js',
+        },
       },
     },
     server: {

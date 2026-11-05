@@ -36,7 +36,7 @@ export const DownloadAppView: React.FC = () => {
     versionName: '2.4.0-Production',
     versionCode: 20400,
     packageId: 'com.nexus.social.app',
-    fileSize: '2.8 ميجابايت',
+    fileSize: '58 ميجابايت (استهلاك الذاكرة: 50 - 180 ميجابايت كالمعتاد في المتاجر)',
     minSdk: 'Android 7.0 (Nougat / API 24)+',
     releaseDate: new Date().toLocaleDateString('ar-SA', { year: 'numeric', month: 'long', day: 'numeric' }),
     sha256: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'

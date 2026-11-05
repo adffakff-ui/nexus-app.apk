@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { Settings, Moon, Sun, Globe, ShieldCheck, Lock, Cloud, Bell, CheckCircle2, Mic, Camera, MapPin, Bluetooth, Clipboard, Cpu, Usb } from 'lucide-react';
+import { Settings, Moon, Sun, Globe, ShieldCheck, Lock, Cloud, Bell, CheckCircle2, Mic, Camera, MapPin, Bluetooth, Clipboard, Cpu, Usb, X } from 'lucide-react';
 
 import { PermissionManager } from './PermissionManager';
 
 export const SettingsView: React.FC = () => {
-  const { theme, setTheme, language, setLanguage, currentUser } = useApp();
+  const { theme, setTheme, language, setLanguage, currentUser, blockedKeywords, setBlockedKeywords } = useApp();
   const [twoFactor, setTwoFactor] = useState(currentUser?.twoFactorEnabled ?? true);
   const [emailNotif, setEmailNotif] = useState(true);
   const [pushNotif, setPushNotif] = useState(true);
@@ -109,6 +109,50 @@ export const SettingsView: React.FC = () => {
           </h3>
           
           <PermissionManager />
+        </div>
+
+        {/* Content Filtering (Keywords) */}
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm space-y-4">
+          <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+            <ShieldCheck className="w-4 h-4 text-rose-500" /> فلترة المحتوى المزعج
+          </h3>
+          <p className="text-[11px] text-slate-500 dark:text-slate-400">
+            أضف الكلمات التي لا ترغب برؤيتها في خلاصتك. سيتم إخفاء أي منشور يحتوي على هذه الكلمات.
+          </p>
+          <div className="space-y-2">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="أضف كلمة مزعجة..."
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    const val = e.currentTarget.value.trim();
+                    if (val && !blockedKeywords.includes(val)) {
+                      setBlockedKeywords([...blockedKeywords, val]);
+                      e.currentTarget.value = '';
+                    }
+                  }
+                }}
+                className="flex-1 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white p-3 rounded-xl text-xs font-bold border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-rose-500"
+              />
+            </div>
+            <div className="flex flex-wrap gap-2 pt-2">
+              {blockedKeywords.map((keyword) => (
+                <span
+                  key={keyword}
+                  className="bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5"
+                >
+                  {keyword}
+                  <button
+                    onClick={() => setBlockedKeywords(blockedKeywords.filter((k) => k !== keyword))}
+                    className="hover:text-rose-900 dark:hover:text-rose-100"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Cloud Sync & Backup */}
